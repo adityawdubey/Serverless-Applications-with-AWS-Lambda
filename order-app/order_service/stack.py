@@ -1,9 +1,12 @@
 from aws_cdk import (
+    CfnOutput,
     Duration,
     RemovalPolicy,
     Stack,
     aws_dynamodb as dynamodb,
     aws_lambda as lambda_,
+    aws_apigatewayv2 as apigwv2,
+    aws_apigatewayv2_integrations as integrations,
 )
 from constructs import Construct
 
@@ -54,3 +57,32 @@ class OrderServiceStack(Stack):
         # permissions; give each function only what it needs"). grant_read_write
         # is the narrowest method that covers both routes (put + scan).
         self.table.grant_read_write_data(self.fn)
+
+        # HTTP API (simpler/cheaper than REST). Configure CORS HERE and only here
+        # — the single source of truth (deck's #1 gotcha). Lock origins down in
+        # production.
+        http_api = apigwv2.HttpApi(
+            self,
+            "OrderHttpApi",
+            cors_preflight=apigwv2.CorsPreflightOptions(
+                allow_origins=["*"],
+                allow_methods=[
+                    apigwv2.CorsHttpMethod.GET,
+                    apigwv2.CorsHttpMethod.POST,
+                    apigwv2.CorsHttpMethod.OPTIONS,
+                ],
+                allow_headers=["*"],
+            ),
+        )
+
+        integration = integrations.HttpLambdaIntegration("OrderIntegration", handler=self.fn)
+        http_api.add_routes(
+            path="/orders", methods=[apigwv2.HttpMethod.POST], integration=integration
+        )
+        http_api.add_routes(
+            path="/orders", methods=[apigwv2.HttpMethod.GET], integration=integration
+        )
+
+        # Paste ApiUrl into web/index.html (API_BASE).
+        CfnOutput(self, "ApiUrl", value=http_api.url or "")
+        CfnOutput(self, "TableName", value=self.table.table_name)

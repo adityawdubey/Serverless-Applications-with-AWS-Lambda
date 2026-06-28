@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# Deploy the Order Service stack and wire the live API URL into the frontend.
+#
+#   ./deploy.sh
+#
+# Prerequisites: cdk CLI (npm install -g aws-cdk), aws CLI with credentials,
+# and Python 3.12. Safe to re-run — bootstrap and deploy are idempotent.
+set -euo pipefail
+
+# Always run from the directory this script lives in (the CDK project root).
+cd "$(dirname "$0")"
+
+echo "==> Checking prerequisites"
+command -v cdk >/dev/null || { echo "ERROR: cdk CLI not found. Install: npm install -g aws-cdk"; exit 1; }
+command -v aws >/dev/null || { echo "ERROR: aws CLI not found."; exit 1; }
+
+# Create the virtualenv on first run, then activate and install CDK's deps.
+if [ ! -d .venv ]; then
+  echo "==> Creating virtualenv (.venv)"
+  python3 -m venv .venv
+fi
+# shellcheck disable=SC1091
+source .venv/bin/activate
+pip install -q -r requirements.txt
+
+echo "==> Verifying AWS credentials"
+aws sts get-caller-identity >/dev/null 2>&1 || {
+  echo "ERROR: no usable AWS credentials. Run 'aws sso login' or 'aws configure' first."
+  exit 1
+}
+
+echo "==> Bootstrapping the environment (idempotent)"
+cdk bootstrap
+
+echo "==> Deploying OrderServiceStack"
+cdk deploy --require-approval never --outputs-file cdk-outputs.json
+
+# Pull ApiUrl out of the outputs file and inject it into the frontend so the
+# page talks to the live API with no manual editing.
+API_URL=$(python3 -c "import json; d=json.load(open('cdk-outputs.json')); print(next(iter(d.values()))['ApiUrl'])")
+echo "==> Live API URL: $API_URL"
+
+python3 - "$API_URL" <<'PY'
+import re, sys
+url = sys.argv[1].rstrip("/")
+path = "web/index.html"
+src = open(path).read()
+src = re.sub(r'const API_BASE = "[^"]*";', f'const API_BASE = "{url}";', src)
+open(path, "w").write(src)
+print(f"==> Wrote API_BASE into {path}")
+PY
+
+echo
+echo "Done. Serve the frontend with:"
+echo "  cd web && python3 -m http.server 8000   # then open http://localhost:8000"
+echo
+echo "Tear down later with:  cdk destroy"

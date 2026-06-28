@@ -4,3 +4,4 @@ __pycache__/
 cdk.out/
 .pytest_cache/
 node_modules/
+cdk-outputs.json

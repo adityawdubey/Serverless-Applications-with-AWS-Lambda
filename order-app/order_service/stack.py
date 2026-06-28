@@ -1,7 +1,9 @@
 from aws_cdk import (
+    Duration,
     RemovalPolicy,
     Stack,
     aws_dynamodb as dynamodb,
+    aws_lambda as lambda_,
 )
 from constructs import Construct
 
@@ -27,4 +29,22 @@ class OrderServiceStack(Stack):
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
             removal_policy=RemovalPolicy.DESTROY,
+        )
+
+        # One domain Lambda, two routes. Code.from_asset zips src/ (just app.py;
+        # boto3 is already in the runtime, so NO pip/Docker bundling) and CDK
+        # ships it. handler="app.handler" → file app.py, function handler().
+        # The fixed name shows as "OrderService" in the console; redeploys update
+        # it in place (drop function_name to let CDK auto-name if ever needed).
+        self.fn = lambda_.Function(
+            self,
+            "OrderServiceFunction",
+            function_name="OrderService",
+            runtime=lambda_.Runtime.PYTHON_3_12,
+            architecture=lambda_.Architecture.ARM_64,
+            handler="app.handler",
+            code=lambda_.Code.from_asset("src"),
+            memory_size=256,
+            timeout=Duration.seconds(10),
+            environment={"TABLE_NAME": self.table.table_name},
         )

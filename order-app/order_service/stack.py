@@ -48,3 +48,9 @@ class OrderServiceStack(Stack):
             timeout=Duration.seconds(10),
             environment={"TABLE_NAME": self.table.table_name},
         )
+
+        # Least privilege — CDK generates a scoped IAM policy for exactly this
+        # table (deck: "the #1 cause of real-world Lambda failures is
+        # permissions; give each function only what it needs"). grant_read_write
+        # is the narrowest method that covers both routes (put + scan).
+        self.table.grant_read_write_data(self.fn)

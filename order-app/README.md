@@ -22,7 +22,7 @@ Equivalents: `cdk bootstrap`, `cdk deploy`, `cdk destroy`.
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 npx aws-cdk@2 bootstrap          # one-time per account/region
 npx aws-cdk@2 deploy             # prints ApiUrl and TableName
 ```

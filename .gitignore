@@ -10,3 +10,9 @@ __pycache__/
 .idea/
 dist/
 build/
+
+# AI working docs (implementation plans, prompts, local Claude settings) —
+# not part of the app, kept out of version control.
+docs/superpowers/
+claude-code-prompt-order-app.md
+.claude/

@@ -66,6 +66,16 @@ def list_orders():
     return _resp(200, items)
 
 
+def handler(event, context):
+    # HTTP API payload v2 gives routeKey values like "POST /orders".
+    route = event.get("routeKey")
+    if route == "POST /orders":
+        return create_order(event)
+    if route == "GET /orders":
+        return list_orders()
+    return _resp(404, {"message": "not found"})
+
+
 
 
 

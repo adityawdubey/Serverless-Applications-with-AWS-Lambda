@@ -54,6 +54,18 @@ def create_order(event):
     return _resp(201, item)
 
 
+def list_orders():
+    # scan() reads the whole table — fine at this scale; use Query with a key in
+    # production.
+    result = table.scan()
+    items = sorted(
+        result.get("Items", []),
+        key=lambda o: o.get("createdAt", ""),
+        reverse=True,
+    )
+    return _resp(200, items)
+
+
 
 
 

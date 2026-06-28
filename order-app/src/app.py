@@ -1,5 +1,7 @@
 import json
 import os
+import uuid
+from datetime import datetime, timezone
 from decimal import Decimal
 
 import boto3
@@ -29,6 +31,27 @@ def _resp(status, body):
         "headers": {"Content-Type": "application/json"},
         "body": json.dumps(body, default=_to_jsonable),
     }
+
+
+def create_order(event):
+    raw = event.get("body") or ""
+    try:
+        data = json.loads(raw) if raw else {}
+    except json.JSONDecodeError:
+        return _resp(400, {"message": "invalid JSON body"})
+    if not data:
+        return _resp(400, {"message": "empty body"})
+
+    item = {
+        "orderId": str(uuid.uuid4()),
+        "createdAt": datetime.now(timezone.utc).isoformat(),
+        "status": "New",
+        "customer": data.get("customer"),
+        "item": data.get("item"),
+        "quantity": data.get("quantity"),
+    }
+    table.put_item(Item=item)
+    return _resp(201, item)
 
 
 

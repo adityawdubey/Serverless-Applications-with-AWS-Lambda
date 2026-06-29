@@ -1,6 +1,6 @@
 from pathlib import Path
 
-README = Path(__file__).resolve().parents[1] / "README.md"
+README = Path(__file__).resolve().parents[2] / "README.md"
 
 
 def test_readme_has_required_sections():

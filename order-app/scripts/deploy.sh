@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Deploy the Order Service stack and wire the live API URL into the frontend.
 #
-#   ./deploy.sh
+#   ./scripts/deploy.sh
 #
 # Prerequisites: cdk CLI (npm install -g aws-cdk), aws CLI with credentials,
 # and Python 3.12. Safe to re-run — bootstrap and deploy are idempotent.
 set -euo pipefail
 
-# Always run from the directory this script lives in (the CDK project root).
-cd "$(dirname "$0")"
+# Run from the CDK project root (this script lives in scripts/).
+cd "$(dirname "$0")/.."
 
 echo "==> Checking prerequisites"
 command -v cdk >/dev/null || { echo "ERROR: cdk CLI not found. Install: npm install -g aws-cdk"; exit 1; }

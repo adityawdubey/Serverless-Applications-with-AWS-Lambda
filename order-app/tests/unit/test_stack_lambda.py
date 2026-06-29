@@ -1,7 +1,7 @@
 import aws_cdk as cdk
 from aws_cdk.assertions import Match, Template
 
-from order_service.stack import OrderServiceStack
+from stacks.order_service_stack import OrderServiceStack
 
 
 def _template():
@@ -15,7 +15,7 @@ def test_lambda_runtime_arch_and_config():
         {
             "Runtime": "python3.12",
             "Architectures": ["arm64"],
-            "Handler": "app.handler",
+            "Handler": "handler.handler",
             "MemorySize": 256,
             "Timeout": 10,
             "FunctionName": "OrderService",

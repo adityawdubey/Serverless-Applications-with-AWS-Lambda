@@ -1,6 +1,6 @@
 from pathlib import Path
 
-HTML = Path(__file__).resolve().parents[1] / "web" / "index.html"
+HTML = Path(__file__).resolve().parents[2] / "web" / "index.html"
 
 
 def test_frontend_contains_required_markers():

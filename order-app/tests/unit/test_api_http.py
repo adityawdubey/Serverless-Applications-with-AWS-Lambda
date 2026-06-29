@@ -1,6 +1,6 @@
 from pathlib import Path
 
-SNIPPETS = Path(__file__).resolve().parents[1] / "scripts" / "api.http"
+SNIPPETS = Path(__file__).resolve().parents[2] / "scripts" / "api.http"
 
 
 def test_api_http_has_both_calls():

@@ -20,9 +20,9 @@ def app_module():
             AttributeDefinitions=[{"AttributeName": "orderId", "AttributeType": "S"}],
             BillingMode="PAY_PER_REQUEST",
         )
-        import app
-        importlib.reload(app)
-        yield app
+        import handler
+        importlib.reload(handler)
+        yield handler
 
 
 def test_create_order_returns_201_and_persists(app_module):

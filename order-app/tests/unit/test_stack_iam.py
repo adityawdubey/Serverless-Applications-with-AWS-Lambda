@@ -1,7 +1,7 @@
 import aws_cdk as cdk
 from aws_cdk.assertions import Match, Template
 
-from order_service.stack import OrderServiceStack
+from stacks.order_service_stack import OrderServiceStack
 
 
 def _template():

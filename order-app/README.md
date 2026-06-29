@@ -30,6 +30,14 @@ npx aws-cdk@2 deploy             # prints ApiUrl and TableName
 Copy the `ApiUrl` output into `web/index.html` → `const API_BASE = "..."` (no
 trailing slash).
 
+Or do all of the above in one step with the helper script, which also injects
+the `ApiUrl` into the frontend for you:
+
+```bash
+./scripts/deploy.sh      # bootstrap + deploy + wire API_BASE
+./scripts/delete.sh      # tear everything down
+```
+
 ## Run the frontend
 
 ```bash

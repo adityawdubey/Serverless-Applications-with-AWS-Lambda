@@ -6,26 +6,20 @@ from decimal import Decimal
 
 import boto3
 
-# Clients are created OUTSIDE the handler so warm invocations reuse them.
-# (deck: "Lambda freezes & reuses the execution environment — anything created
-# out here is reused on warm calls.")
+# Created outside the handler so warm invocations reuse the client.
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["TABLE_NAME"])
 
 
 def _to_jsonable(value):
-    # DynamoDB's resource API returns numbers as Decimal, which json.dumps
-    # cannot serialize. Collapse whole numbers to int, otherwise float.
+    # DynamoDB returns numbers as Decimal, which json.dumps can't handle.
     if isinstance(value, Decimal):
         return int(value) if value % 1 == 0 else float(value)
     raise TypeError(f"not JSON serializable: {type(value)!r}")
 
 
 def _resp(status, body):
-    # CORS is configured on the API Gateway HTTP API (see the stack). Per AWS,
-    # when CORS is configured on an HTTP API, API Gateway adds the CORS headers
-    # and IGNORES any returned by the function — so we keep CORS in exactly one
-    # place (the API). This is the deck's "#1 gotcha: enable CORS on the API".
+    # CORS lives on the API (the stack), not here — so we only set Content-Type.
     return {
         "statusCode": status,
         "headers": {"Content-Type": "application/json"},
@@ -55,8 +49,7 @@ def create_order(event):
 
 
 def list_orders():
-    # scan() reads the whole table — fine at this scale; use Query with a key in
-    # production.
+    # scan() reads the whole table — fine here; use Query with a key in production.
     result = table.scan()
     items = sorted(
         result.get("Items", []),
@@ -74,10 +67,6 @@ def handler(event, context):
     if route == "GET /orders":
         return list_orders()
     return _resp(404, {"message": "not found"})
-
-
-
-
 
 
 

@@ -16,24 +16,16 @@ from constructs import Construct
 
 
 class OrderServiceStack(Stack):
-    """The Order Service — one microservice of a larger restaurant application.
+    """The Order Service — one microservice of a restaurant application.
 
-    A full restaurant app would also have Menu, Payments, and Kitchen services;
-    we build only this one, end to end. The narrow scope is deliberate.
-
-    Production-shaped: the single-page frontend is hosted on a private S3 bucket
-    served over HTTPS through CloudFront; the API is API Gateway → Lambda →
-    DynamoDB. The frontend reaches the API via a generated config.js, so there is
-    no manual URL paste step.
+    Frontend on a private S3 bucket served via CloudFront; data path is
+    API Gateway -> Lambda -> DynamoDB.
     """
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # ------------------------------------------------------------------ data
-        # On-demand table; DESTROY enables easy teardown.
-        # NOTE: RemovalPolicy.DESTROY deletes the data on `cdk destroy` — not for
-        # production.
+        # On-demand table. DESTROY deletes the data on `cdk destroy` (demo, not prod).
         self.table = dynamodb.Table(
             self,
             "OrdersTable",
@@ -44,13 +36,8 @@ class OrderServiceStack(Stack):
             removal_policy=RemovalPolicy.DESTROY,
         )
 
-        # --------------------------------------------------------------- compute
-        # One domain Lambda, two routes. Code.from_asset zips the handler folder
-        # (just handler.py; boto3 is already in the runtime, so NO pip/Docker
-        # bundling) and CDK ships it. handler="handler.handler" → file handler.py,
-        # function handler(). The fixed name shows as "OrderService" in the
-        # console; redeploys update it in place (drop function_name to let CDK
-        # auto-name if ever needed).
+        # One Lambda handling both routes. from_asset zips the folder; boto3 is in
+        # the runtime, so there's nothing to bundle (no Docker).
         self.fn = lambda_.Function(
             self,
             "OrderServiceFunction",
@@ -64,15 +51,11 @@ class OrderServiceStack(Stack):
             environment={"TABLE_NAME": self.table.table_name},
         )
 
-        # Least privilege — CDK generates a scoped IAM policy for exactly this
-        # table (deck: "the #1 cause of real-world Lambda failures is
-        # permissions; give each function only what it needs"). grant_read_write
-        # is the narrowest method that covers both routes (put + scan).
+        # Least privilege: a scoped policy for just this table, just read + write.
         self.table.grant_read_write_data(self.fn)
 
-        # ---------------------------------------------------------- static site
-        # Private bucket — NOT publicly readable. CloudFront reaches it via
-        # Origin Access Control; all public traffic goes through CloudFront/HTTPS.
+        # Private bucket; CloudFront reaches it via Origin Access Control (no
+        # public access), and serves the page over HTTPS.
         site_bucket = s3.Bucket(
             self,
             "SiteBucket",
@@ -93,10 +76,8 @@ class OrderServiceStack(Stack):
             ),
         )
 
-        # ------------------------------------------------------------------- api
-        # HTTP API (simpler/cheaper than REST). CORS is configured HERE and only
-        # here — the single source of truth (deck's #1 gotcha) — and locked to the
-        # CloudFront origin that actually serves the page.
+        # CORS is set only here (the API), and only the CloudFront origin is
+        # allowed. API Gateway then ignores any CORS headers from the function.
         http_api = apigwv2.HttpApi(
             self,
             "OrderHttpApi",
@@ -119,10 +100,8 @@ class OrderServiceStack(Stack):
             path="/orders", methods=[apigwv2.HttpMethod.GET], integration=integration
         )
 
-        # -------------------------------------------------------------- deploy FE
-        # Upload web/ to the bucket, plus a generated config.js that carries the
-        # live API URL (resolved at deploy time), then invalidate the CloudFront
-        # cache so the new version is served. This removes any manual paste step.
+        # Upload web/ plus a generated config.js holding the live API URL, then
+        # invalidate the CloudFront cache. No manual paste step.
         s3deploy.BucketDeployment(
             self,
             "DeployWebsite",
@@ -138,7 +117,6 @@ class OrderServiceStack(Stack):
             distribution_paths=["/*"],
         )
 
-        # --------------------------------------------------------------- outputs
         CfnOutput(self, "SiteUrl", value=f"https://{distribution.distribution_domain_name}")
         CfnOutput(self, "ApiUrl", value=http_api.url or "")
         CfnOutput(self, "TableName", value=self.table.table_name)

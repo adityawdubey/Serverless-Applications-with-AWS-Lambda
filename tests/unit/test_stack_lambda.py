@@ -30,5 +30,11 @@ def test_lambda_has_table_name_env():
     )
 
 
-def test_exactly_one_lambda():
-    _template().resource_count_is("AWS::Lambda::Function", 1)
+def test_exactly_one_domain_lambda():
+    # CDK adds helper Lambdas for the static-site deployment (BucketDeployment,
+    # auto-delete-objects), so assert exactly one *domain* function — ours — by
+    # its FunctionName rather than a raw total count.
+    fns = _template().find_resources(
+        "AWS::Lambda::Function", {"Properties": {"FunctionName": "OrderService"}}
+    )
+    assert len(fns) == 1

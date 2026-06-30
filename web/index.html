@@ -96,9 +96,13 @@
     <footer id="apiFooter"></footer>
   </div>
 
+<!-- config.js is generated and uploaded by the CDK deploy (BucketDeployment);
+     it sets window.APP_CONFIG.apiBase to the live API Gateway URL. -->
+<script src="config.js"></script>
 <script>
-  // Paste the CDK output `ApiUrl` here (no trailing slash).
-  const API_BASE = "<paste-from-cdk-output>";
+  // API base comes from the deployed config.js (no manual paste). Trailing
+  // slashes are trimmed so `${API_BASE}/orders` is always well-formed.
+  const API_BASE = ((window.APP_CONFIG && window.APP_CONFIG.apiBase) || "").replace(/\/+$/, "");
 
   const $ = (id) => document.getElementById(id);
   $("apiFooter").textContent = "API: " + API_BASE;

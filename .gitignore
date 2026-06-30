@@ -19,3 +19,4 @@ docs/superpowers/
 cdk.out/
 .pytest_cache/
 cdk-outputs.json
+web/config.js

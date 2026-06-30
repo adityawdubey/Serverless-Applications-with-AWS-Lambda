@@ -33,25 +33,21 @@ echo "==> Bootstrapping the environment (idempotent)"
 cdk bootstrap
 
 echo "==> Deploying OrderServiceStack"
+# The deploy uploads web/ to S3 and generates config.js with the live API URL,
+# so there is no manual paste step.
 cdk deploy --require-approval never --outputs-file cdk-outputs.json
 
-# Pull ApiUrl out of the outputs file and inject it into the frontend so the
-# page talks to the live API with no manual editing.
-API_URL=$(python3 -c "import json; d=json.load(open('cdk-outputs.json')); print(next(iter(d.values()))['ApiUrl'])")
-echo "==> Live API URL: $API_URL"
-
-python3 - "$API_URL" <<'PY'
-import re, sys
-url = sys.argv[1].rstrip("/")
-path = "web/index.html"
-src = open(path).read()
-src = re.sub(r'const API_BASE = "[^"]*";', f'const API_BASE = "{url}";', src)
-open(path, "w").write(src)
-print(f"==> Wrote API_BASE into {path}")
-PY
+# Read the stack outputs and print the public site + API URLs.
+read -r SITE_URL API_URL <<<"$(python3 -c "
+import json
+o = next(iter(json.load(open('cdk-outputs.json')).values()))
+print(o['SiteUrl'], o['ApiUrl'])
+")"
 
 echo
-echo "Done. Serve the frontend with:"
-echo "  cd web && python3 -m http.server 8000   # then open http://localhost:8000"
+echo "Done."
+echo "  Site (open this):  $SITE_URL"
+echo "  API:               $API_URL"
 echo
-echo "Tear down later with:  cdk destroy"
+echo "First deploy? Give CloudFront a few minutes to finish provisioning."
+echo "Tear down later with:  ./scripts/delete.sh"

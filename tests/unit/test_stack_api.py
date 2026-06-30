@@ -10,11 +10,16 @@ def _template():
 
 
 def test_http_api_has_cors():
+    # Origins are locked to the CloudFront domain (a deploy-time token), so we
+    # assert CORS is configured with the expected methods rather than pinning the
+    # origin string.
     _template().has_resource_properties(
         "AWS::ApiGatewayV2::Api",
         {
             "ProtocolType": "HTTP",
-            "CorsConfiguration": Match.object_like({"AllowOrigins": ["*"]}),
+            "CorsConfiguration": Match.object_like(
+                {"AllowMethods": Match.array_with(["POST"])}
+            ),
         },
     )
 
@@ -27,3 +32,4 @@ def test_outputs_present():
     outputs = _template().find_outputs("*")
     assert "ApiUrl" in outputs
     assert "TableName" in outputs
+    assert "SiteUrl" in outputs

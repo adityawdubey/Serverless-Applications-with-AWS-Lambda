@@ -76,21 +76,9 @@ class OrderServiceStack(Stack):
             ),
         )
 
-        # CORS is set only here (the API), and only the CloudFront origin is
-        # allowed. API Gateway then ignores any CORS headers from the function.
-        http_api = apigwv2.HttpApi(
-            self,
-            "OrderHttpApi",
-            cors_preflight=apigwv2.CorsPreflightOptions(
-                allow_origins=[f"https://{distribution.distribution_domain_name}"],
-                allow_methods=[
-                    apigwv2.CorsHttpMethod.GET,
-                    apigwv2.CorsHttpMethod.POST,
-                    apigwv2.CorsHttpMethod.OPTIONS,
-                ],
-                allow_headers=["*"],
-            ),
-        )
+        # No CORS needed: the page and the API end up same-origin because both
+        # are served by the CloudFront distribution (the /orders behavior below).
+        http_api = apigwv2.HttpApi(self, "OrderHttpApi")
 
         integration = integrations.HttpLambdaIntegration("OrderIntegration", handler=self.fn)
         http_api.add_routes(
@@ -100,18 +88,25 @@ class OrderServiceStack(Stack):
             path="/orders", methods=[apigwv2.HttpMethod.GET], integration=integration
         )
 
-        # Upload web/ plus a generated config.js holding the live API URL, then
-        # invalidate the CloudFront cache. No manual paste step.
+        # Route /orders through the same CloudFront domain as the page, so the
+        # browser sees one origin. Don't cache API responses; forward the request
+        # unchanged (minus the Host header, which API Gateway sets itself).
+        distribution.add_behavior(
+            "/orders",
+            origins.HttpOrigin(
+                f"{http_api.api_id}.execute-api.{self.region}.amazonaws.com"
+            ),
+            viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+            allowed_methods=cloudfront.AllowedMethods.ALLOW_ALL,
+            cache_policy=cloudfront.CachePolicy.CACHING_DISABLED,
+            origin_request_policy=cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        )
+
+        # Upload web/ to the bucket and invalidate the CloudFront cache.
         s3deploy.BucketDeployment(
             self,
             "DeployWebsite",
-            sources=[
-                s3deploy.Source.asset("web"),
-                s3deploy.Source.data(
-                    "config.js",
-                    f'window.APP_CONFIG = {{ apiBase: "{http_api.url}" }};',
-                ),
-            ],
+            sources=[s3deploy.Source.asset("web")],
             destination_bucket=site_bucket,
             distribution=distribution,
             distribution_paths=["/*"],

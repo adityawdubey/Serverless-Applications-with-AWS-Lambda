@@ -96,16 +96,13 @@
     <footer id="apiFooter"></footer>
   </div>
 
-<!-- config.js is generated and uploaded by the CDK deploy (BucketDeployment);
-     it sets window.APP_CONFIG.apiBase to the live API Gateway URL. -->
-<script src="config.js"></script>
 <script>
-  // API base comes from the deployed config.js (no manual paste). Trailing
-  // slashes are trimmed so `${API_BASE}/orders` is always well-formed.
-  const API_BASE = ((window.APP_CONFIG && window.APP_CONFIG.apiBase) || "").replace(/\/+$/, "");
+  // Same-origin: CloudFront serves both the page and /orders, so the API base is
+  // empty and we just call the relative path "/orders". No config, no CORS.
+  const API_BASE = "";
 
   const $ = (id) => document.getElementById(id);
-  $("apiFooter").textContent = "API: " + API_BASE;
+  $("apiFooter").textContent = "API: same origin (/orders via CloudFront)";
 
   function initials(name) {
     return (name || "?").trim().slice(0, 2).toUpperCase();

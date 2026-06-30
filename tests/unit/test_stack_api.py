@@ -9,18 +9,11 @@ def _template():
     return Template.from_stack(OrderServiceStack(app, "TestStack"))
 
 
-def test_http_api_has_cors():
-    # Origins are locked to the CloudFront domain (a deploy-time token), so we
-    # assert CORS is configured with the expected methods rather than pinning the
-    # origin string.
+def test_http_api_has_no_cors():
+    # Same-origin via CloudFront — the API needs no CORS at all.
     _template().has_resource_properties(
         "AWS::ApiGatewayV2::Api",
-        {
-            "ProtocolType": "HTTP",
-            "CorsConfiguration": Match.object_like(
-                {"AllowMethods": Match.array_with(["POST"])}
-            ),
-        },
+        {"ProtocolType": "HTTP", "CorsConfiguration": Match.absent()},
     )
 
 

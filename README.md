@@ -18,16 +18,16 @@ The hands-on portion builds **one microservice** — the **Order Service** — o
 larger restaurant application. A full app would also have Menu, Payments, and
 Kitchen services; here we build only this one, end to end.
 
-This is the **production-shaped** version: the single-page frontend is hosted on
-a private S3 bucket served over HTTPS through **CloudFront**, and the data path
-is **browser → API Gateway → Lambda → DynamoDB → back**. The page reaches the API
-through a `config.js` that the deploy generates with the live API URL, so there
-is no manual paste step.
+This is the **production-shaped** version: a single **CloudFront** distribution
+serves both the page (from a private S3 bucket) and the API (the `/orders` path
+forwards to API Gateway). Because the page and the API share one origin, the
+browser makes no cross-origin request — so there is **no CORS** and no API-URL
+config to manage; the page just calls the relative path `/orders`.
 
 ```
-Browser ──(HTTPS)──► CloudFront ──► S3 (static site)      # loads the page
-   │
-   └───(fetch /orders)──► API Gateway ──► Lambda ──► DynamoDB
+                       ┌─► (default)  S3 (static site)         # the page
+Browser ──HTTPS──► CloudFront
+                       └─► /orders    API Gateway ─► Lambda ─► DynamoDB
 ```
 
 - `POST /orders` — create an order (returns 201 + the created order)
@@ -41,7 +41,7 @@ cdk.json                                     # CDK config + feature flags
 requirements.txt                             # Python dependencies (CDK + test)
 stacks/order_service_stack.py                # CDK stack: DynamoDB + Lambda + HTTP API + S3 + CloudFront
 lambda_functions/order_service/handler.py    # the Lambda handler (thin routeKey router)
-web/index.html                               # vanilla-JS frontend (config.js is generated at deploy)
+web/index.html                               # vanilla-JS frontend (calls relative /orders)
 scripts/deploy.sh, scripts/delete.sh         # one-command deploy / teardown
 scripts/api.http                             # curl snippets
 tests/unit/                                  # pytest (handler via moto, stack via assertions)
@@ -55,8 +55,8 @@ tests/unit/                                  # pytest (handler via moto, stack v
 
 ## Deploy
 
-The fastest path is the script — it bootstraps, deploys, uploads the frontend to
-S3, and generates `config.js` with the live API URL:
+The fastest path is the script — it bootstraps, deploys, and uploads the
+frontend to S3:
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
@@ -71,23 +71,22 @@ cdk bootstrap          # one-time per account/region
 cdk deploy             # prints SiteUrl, ApiUrl, and TableName
 ```
 
-When it finishes, open the **`SiteUrl`** (the CloudFront URL) in your browser —
-the deployed page already knows the API URL via the generated `config.js`. On a
-first deploy, give CloudFront a few minutes to finish provisioning.
+When it finishes, open the **`SiteUrl`** (the CloudFront URL) in your browser.
+On a first deploy, give CloudFront a few minutes to finish provisioning.
 
 ## Local development
 
-To run the page locally without deploying, serve `web/` and provide a `config.js`
-that points `API_BASE` at a deployed API:
+The page calls the relative path `/orders`, so it expects the API on its own
+origin. For UI-only tweaks you can still serve the files locally:
 
 ```bash
-cd web
-echo 'window.APP_CONFIG = { apiBase: "https://<your-api>.execute-api.<region>.amazonaws.com" };' > config.js
-python -m http.server 8000        # open http://localhost:8000
+cd web && python -m http.server 8000        # open http://localhost:8000
 ```
 
-Serving over a real `http://` origin is the most reliable option. (`config.js` is
-git-ignored so a local copy never gets committed.)
+API calls won't resolve at `localhost` (there's no `/orders` there, and the API
+has no CORS by design), so test the full flow against the deployed `SiteUrl`. To
+point `API_BASE` somewhere temporarily for local work, edit the top of
+`web/index.html`.
 
 ## On-stage script
 
@@ -113,13 +112,14 @@ pytest
 - `PythonFunction` (alpha + Docker) earns its place only when you have
   third-party pip deps to bundle; we have none beyond `boto3`.
 
-## CORS callout (the #1 gotcha)
+## CORS callout (the #1 gotcha — and how we sidestep it)
 
-CORS is enabled in exactly one place — the **HTTP API** (`cors_preflight`) — and
-locked to the CloudFront origin that serves the page. When CORS is configured on
-an HTTP API, API Gateway answers preflight and **ignores** any CORS headers from
-the Lambda, so the function only returns `Content-Type`. `curl`/Postman ignore
-CORS — handy as a stage fallback (see `scripts/api.http`).
+CORS bites whenever a page calls an API on a *different* origin. We avoid it
+entirely: CloudFront serves both the page and `/orders`, so they share one
+origin and the browser never makes a cross-origin request — no CORS config at
+all. (The simpler-but-noisier alternative is to keep the page and API on
+separate origins and enable CORS on the HTTP API; `curl`/Postman ignore CORS
+either way — see `scripts/api.http`.)
 
 ## Teardown
 

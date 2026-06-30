@@ -36,5 +36,21 @@ def test_cloudfront_distribution_serves_index():
 
 
 def test_frontend_is_deployed_to_the_bucket():
-    # BucketDeployment renders as a custom resource that uploads web/ + config.js.
+    # BucketDeployment renders as a custom resource that uploads web/.
     _template().resource_count_is("Custom::CDKBucketDeployment", 1)
+
+
+def test_api_routed_through_cloudfront():
+    # /orders is served by the same distribution as the page (same-origin).
+    _template().has_resource_properties(
+        "AWS::CloudFront::Distribution",
+        {
+            "DistributionConfig": Match.object_like(
+                {
+                    "CacheBehaviors": Match.array_with(
+                        [Match.object_like({"PathPattern": "/orders"})]
+                    )
+                }
+            )
+        },
+    )

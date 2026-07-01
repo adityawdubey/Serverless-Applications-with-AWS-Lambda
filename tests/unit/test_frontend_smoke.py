@@ -12,7 +12,6 @@ def test_frontend_contains_required_markers():
     assert "fetch(" in text
     # Branding and sample items from the spec/mockup.
     assert "Order service" in text
-    assert "Serverless" in text
     for sample in ("Margherita pizza", "Cold coffee", "Paneer wrap"):
         assert sample in text
     # Panels labelled by route.

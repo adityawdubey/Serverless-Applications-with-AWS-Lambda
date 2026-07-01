@@ -9,11 +9,19 @@ def _template():
     return Template.from_stack(OrderServiceStack(app, "TestStack"))
 
 
-def test_http_api_has_no_cors():
-    # Same-origin via CloudFront — the API needs no CORS at all.
+def test_http_api_has_cors():
+    # Cross-origin (S3 http page -> execute-api https) — the API enables CORS.
     _template().has_resource_properties(
         "AWS::ApiGatewayV2::Api",
-        {"ProtocolType": "HTTP", "CorsConfiguration": Match.absent()},
+        {
+            "ProtocolType": "HTTP",
+            "CorsConfiguration": Match.object_like(
+                {
+                    "AllowOrigins": ["*"],
+                    "AllowMethods": Match.array_with(["GET", "POST"]),
+                }
+            ),
+        },
     )
 
 

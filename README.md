@@ -18,17 +18,22 @@ The hands-on portion builds **one microservice** — the **Order Service** — o
 larger restaurant application. A full app would also have Menu, Payments, and
 Kitchen services; here we build only this one, end to end.
 
-This is the **production-shaped** version: a single **CloudFront** distribution
-serves both the page (from a private S3 bucket) and the API (the `/orders` path
-forwards to API Gateway). Because the page and the API share one origin, the
-browser makes no cross-origin request — so there is **no CORS** and no API-URL
-config to manage; the page just calls the relative path `/orders`.
+This is the **Option B** version: the page is hosted on a **public S3 static
+website** (HTTP), and the API is a separate **API Gateway → Lambda → DynamoDB**
+path. Because the page (S3, `http`) and the API (`execute-api`, `https`) live on
+**different origins**, the browser makes a cross-origin request — so the HTTP API
+enables **CORS**, and the page learns the API's address from a small `config.js`
+that CDK generates at deploy time (it sets `API_BASE` to the real `ApiUrl`).
 
 ```
-                       ┌─► (default)  S3 (static site)         # the page
-Browser ──HTTPS──► CloudFront
-                       └─► /orders    API Gateway ─► Lambda ─► DynamoDB
+Browser ──HTTP───►  S3 static website (public)        # the page
+        └─HTTPS──►  API Gateway ─► Lambda ─► DynamoDB  # /orders (CORS enabled)
 ```
+
+> No CloudFront here — it was the "polished production" layer and is optional.
+> This stack deploys today with no account verification gate. Trade-offs: the
+> website endpoint is **HTTP-only** (no HTTPS), the bucket is **public**, and
+> because it's cross-origin you re-add **CORS** (a nice teaching moment).
 
 - `POST /orders` — create an order (returns 201 + the created order)
 - `GET /orders`  — list all orders (the "kitchen view"; returns 200 + array)
@@ -39,9 +44,9 @@ Browser ──HTTPS──► CloudFront
 app.py                                       # CDK app entry point
 cdk.json                                     # CDK config + feature flags
 requirements.txt                             # Python dependencies (CDK + test)
-stacks/order_service_stack.py                # CDK stack: DynamoDB + Lambda + HTTP API + S3 + CloudFront
+stacks/order_service_stack.py                # CDK stack: DynamoDB + Lambda + HTTP API (CORS) + public S3 website
 lambda_functions/order_service/handler.py    # the Lambda handler (thin routeKey router)
-web/index.html                               # vanilla-JS frontend (calls relative /orders)
+web/index.html                               # vanilla-JS frontend (calls API_BASE + /orders)
 scripts/deploy.sh, scripts/delete.sh         # one-command deploy / teardown
 scripts/api.http                             # curl snippets
 tests/unit/                                  # pytest (handler via moto, stack via assertions)
@@ -56,7 +61,7 @@ tests/unit/                                  # pytest (handler via moto, stack v
 ## Deploy
 
 The fastest path is the script — it bootstraps, deploys, and uploads the
-frontend to S3:
+frontend (plus the generated `config.js`) to the S3 website bucket:
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
@@ -71,22 +76,23 @@ cdk bootstrap          # one-time per account/region
 cdk deploy             # prints SiteUrl, ApiUrl, and TableName
 ```
 
-When it finishes, open the **`SiteUrl`** (the CloudFront URL) in your browser.
-On a first deploy, give CloudFront a few minutes to finish provisioning.
+When it finishes, open the **`SiteUrl`** (the S3 website endpoint, `http://…`) in
+your browser. CDK writes a `config.js` next to the page that sets `API_BASE` to
+the deployed `ApiUrl`, so the page calls the API cross-origin (CORS is enabled on
+the API).
 
 ## Local development
 
-The page calls the relative path `/orders`, so it expects the API on its own
-origin. For UI-only tweaks you can still serve the files locally:
+For UI-only tweaks you can serve the files locally:
 
 ```bash
 cd web && python -m http.server 8000        # open http://localhost:8000
 ```
 
-API calls won't resolve at `localhost` (there's no `/orders` there, and the API
-has no CORS by design), so test the full flow against the deployed `SiteUrl`. To
-point `API_BASE` somewhere temporarily for local work, edit the top of
-`web/index.html`.
+There's no `config.js` locally, so `API_BASE` falls back to empty and API calls
+won't resolve — point it at the deployed API for a full local test by adding a
+`web/config.js` with `window.API_BASE = "<ApiUrl>";` (it's git-ignored / a
+deploy artifact), or just test the full flow against the deployed `SiteUrl`.
 
 ## On-stage script
 
@@ -112,14 +118,16 @@ pytest
 - `PythonFunction` (alpha + Docker) earns its place only when you have
   third-party pip deps to bundle; we have none beyond `boto3`.
 
-## CORS callout (the #1 gotcha — and how we sidestep it)
+## CORS callout (the #1 gotcha — and how we handle it)
 
-CORS bites whenever a page calls an API on a *different* origin. We avoid it
-entirely: CloudFront serves both the page and `/orders`, so they share one
-origin and the browser never makes a cross-origin request — no CORS config at
-all. (The simpler-but-noisier alternative is to keep the page and API on
-separate origins and enable CORS on the HTTP API; `curl`/Postman ignore CORS
-either way — see `scripts/api.http`.)
+CORS bites whenever a page calls an API on a *different* origin — exactly our
+case here: the page is on the S3 website (`http://…s3-website…`) and the API is
+on `https://…execute-api…`. The fix is to enable **CORS** on the HTTP API
+(`cors_preflight` in the stack), which lets the browser's preflight succeed.
+`curl`/Postman ignore CORS entirely, so they work regardless — see
+`scripts/api.http`. (The alternative that sidesteps CORS is to put both the page
+and `/orders` behind one CloudFront origin; that's the optional
+"production-shaped" variant, omitted here.)
 
 ## Teardown
 

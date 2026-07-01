@@ -9,8 +9,6 @@ from aws_cdk import (
     aws_apigatewayv2_integrations as integrations,
     aws_s3 as s3,
     aws_s3_deployment as s3deploy,
-    aws_cloudfront as cloudfront,
-    aws_cloudfront_origins as origins,
 )
 from constructs import Construct
 
@@ -18,8 +16,10 @@ from constructs import Construct
 class OrderServiceStack(Stack):
     """The Order Service — one microservice of a restaurant application.
 
-    Frontend on a private S3 bucket served via CloudFront; data path is
-    API Gateway -> Lambda -> DynamoDB.
+    Frontend on a public S3 static-website bucket (HTTP); data path is
+    API Gateway -> Lambda -> DynamoDB. The page (S3, http) and the API
+    (execute-api, https) are different origins, so the HTTP API enables CORS
+    and the page is told the API base via a deploy-time config.js.
     """
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
@@ -54,31 +54,20 @@ class OrderServiceStack(Stack):
         # Least privilege: a scoped policy for just this table, just read + write.
         self.table.grant_read_write_data(self.fn)
 
-        # Private bucket; CloudFront reaches it via Origin Access Control (no
-        # public access), and serves the page over HTTPS.
-        site_bucket = s3.Bucket(
+        # The page is served from S3 (a different origin than execute-api), so the
+        # browser makes a cross-origin request — CORS on the API is required.
+        http_api = apigwv2.HttpApi(
             self,
-            "SiteBucket",
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-            encryption=s3.BucketEncryption.S3_MANAGED,
-            enforce_ssl=True,
-            removal_policy=RemovalPolicy.DESTROY,
-            auto_delete_objects=True,  # empty the bucket on `cdk destroy`
-        )
-
-        distribution = cloudfront.Distribution(
-            self,
-            "SiteDistribution",
-            default_root_object="index.html",
-            default_behavior=cloudfront.BehaviorOptions(
-                origin=origins.S3BucketOrigin.with_origin_access_control(site_bucket),
-                viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+            "OrderHttpApi",
+            cors_preflight=apigwv2.CorsPreflightOptions(
+                allow_origins=["*"],
+                allow_methods=[
+                    apigwv2.CorsHttpMethod.GET,
+                    apigwv2.CorsHttpMethod.POST,
+                ],
+                allow_headers=["Content-Type"],
             ),
         )
-
-        # No CORS needed: the page and the API end up same-origin because both
-        # are served by the CloudFront distribution (the /orders behavior below).
-        http_api = apigwv2.HttpApi(self, "OrderHttpApi")
 
         integration = integrations.HttpLambdaIntegration("OrderIntegration", handler=self.fn)
         http_api.add_routes(
@@ -88,30 +77,39 @@ class OrderServiceStack(Stack):
             path="/orders", methods=[apigwv2.HttpMethod.GET], integration=integration
         )
 
-        # Route /orders through the same CloudFront domain as the page, so the
-        # browser sees one origin. Don't cache API responses; forward the request
-        # unchanged (minus the Host header, which API Gateway sets itself).
-        distribution.add_behavior(
-            "/orders",
-            origins.HttpOrigin(
-                f"{http_api.api_id}.execute-api.{self.region}.amazonaws.com"
+        # Public S3 static website. No CloudFront: the website endpoint is
+        # HTTP-only and the bucket must allow public reads. Fine for a demo.
+        site_bucket = s3.Bucket(
+            self,
+            "SiteBucket",
+            website_index_document="index.html",
+            website_error_document="index.html",
+            public_read_access=True,
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=False,
+                block_public_policy=False,
+                ignore_public_acls=False,
+                restrict_public_buckets=False,
             ),
-            viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-            allowed_methods=cloudfront.AllowedMethods.ALLOW_ALL,
-            cache_policy=cloudfront.CachePolicy.CACHING_DISABLED,
-            origin_request_policy=cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+            encryption=s3.BucketEncryption.S3_MANAGED,
+            removal_policy=RemovalPolicy.DESTROY,
+            auto_delete_objects=True,  # empty the bucket on `cdk destroy`
         )
 
-        # Upload web/ to the bucket and invalidate the CloudFront cache.
+        # Upload web/ plus a generated config.js that carries the real API base
+        # (a deploy-time value), so the static page knows where to call.
         s3deploy.BucketDeployment(
             self,
             "DeployWebsite",
-            sources=[s3deploy.Source.asset("web")],
+            sources=[
+                s3deploy.Source.asset("web"),
+                s3deploy.Source.data(
+                    "config.js", f"window.API_BASE = '{http_api.api_endpoint}';"
+                ),
+            ],
             destination_bucket=site_bucket,
-            distribution=distribution,
-            distribution_paths=["/*"],
         )
 
-        CfnOutput(self, "SiteUrl", value=f"https://{distribution.distribution_domain_name}")
+        CfnOutput(self, "SiteUrl", value=site_bucket.bucket_website_url)
         CfnOutput(self, "ApiUrl", value=http_api.url or "")
         CfnOutput(self, "TableName", value=self.table.table_name)

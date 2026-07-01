@@ -9,48 +9,45 @@ def _template():
     return Template.from_stack(OrderServiceStack(app, "TestStack"))
 
 
-def test_site_bucket_blocks_public_access():
-    # The site bucket must be private — CloudFront serves it, not the public.
+def test_site_bucket_is_a_public_website():
+    # Option B: the page is a public S3 static website (no CloudFront).
     _template().has_resource_properties(
         "AWS::S3::Bucket",
         {
+            "WebsiteConfiguration": {"IndexDocument": "index.html"},
             "PublicAccessBlockConfiguration": {
-                "BlockPublicAcls": True,
-                "BlockPublicPolicy": True,
-                "IgnorePublicAcls": True,
-                "RestrictPublicBuckets": True,
-            }
+                "BlockPublicPolicy": False,
+                "RestrictPublicBuckets": False,
+            },
         },
     )
 
 
-def test_cloudfront_distribution_serves_index():
+def test_site_bucket_grants_public_read():
+    # A bucket policy makes objects world-readable so the website endpoint works.
     _template().has_resource_properties(
-        "AWS::CloudFront::Distribution",
+        "AWS::S3::BucketPolicy",
         {
-            "DistributionConfig": Match.object_like(
-                {"DefaultRootObject": "index.html"}
-            )
-        },
-    )
-
-
-def test_frontend_is_deployed_to_the_bucket():
-    # BucketDeployment renders as a custom resource that uploads web/.
-    _template().resource_count_is("Custom::CDKBucketDeployment", 1)
-
-
-def test_api_routed_through_cloudfront():
-    # /orders is served by the same distribution as the page (same-origin).
-    _template().has_resource_properties(
-        "AWS::CloudFront::Distribution",
-        {
-            "DistributionConfig": Match.object_like(
+            "PolicyDocument": Match.object_like(
                 {
-                    "CacheBehaviors": Match.array_with(
-                        [Match.object_like({"PathPattern": "/orders"})]
+                    "Statement": Match.array_with(
+                        [
+                            Match.object_like(
+                                {"Action": "s3:GetObject", "Effect": "Allow"}
+                            )
+                        ]
                     )
                 }
             )
         },
     )
+
+
+def test_no_cloudfront_distribution():
+    # Option B drops CloudFront entirely.
+    _template().resource_count_is("AWS::CloudFront::Distribution", 0)
+
+
+def test_frontend_is_deployed_to_the_bucket():
+    # BucketDeployment renders as a custom resource that uploads web/ + config.js.
+    _template().resource_count_is("Custom::CDKBucketDeployment", 1)

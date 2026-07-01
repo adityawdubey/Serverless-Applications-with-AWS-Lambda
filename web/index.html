@@ -61,8 +61,6 @@
       <div class="tile"></div>
       <div>
         <h1>Order service</h1>
-        <p class="sub">Serverless &middot; place an order, watch it appear</p>
-        <span class="pipe">browser &rarr; API Gateway &rarr; Lambda &rarr; DynamoDB</span>
       </div>
     </header>
 
@@ -92,17 +90,16 @@
         <div id="list"></div>
       </section>
     </div>
-
-    <footer id="apiFooter"></footer>
   </div>
 
+<script src="config.js"></script>
 <script>
-  // Same-origin: CloudFront serves both the page and /orders, so the API base is
-  // empty and we just call the relative path "/orders". No config, no CORS.
-  const API_BASE = "";
+  // Cross-origin: the page is on S3 (http) and the API is on execute-api (https),
+  // so we call the API's absolute URL. config.js is generated at deploy time and
+  // sets window.API_BASE to the real endpoint; the fallback keeps local edits working.
+  const API_BASE = window.API_BASE || "";
 
   const $ = (id) => document.getElementById(id);
-  $("apiFooter").textContent = "API: same origin (/orders via CloudFront)";
 
   function initials(name) {
     return (name || "?").trim().slice(0, 2).toUpperCase();

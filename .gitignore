@@ -11,7 +11,7 @@ __pycache__/
 dist/
 build/
 
-# AI working docs (implementation plans, prompts, local Claude settings) —
+# AI working docs (implementation plans, prompts, local Claude settings),
 # not part of the app, kept out of version control.
 docs/superpowers/
 .claude/

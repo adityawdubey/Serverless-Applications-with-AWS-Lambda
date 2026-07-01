@@ -1,12 +1,12 @@
 # Replace API_BASE with the CDK output `ApiUrl` (no trailing slash).
-# curl / Postman ignore CORS — handy for testing on stage.
+# curl / Postman ignore CORS; handy for testing on stage.
 
-# Create an order — POST /orders
+# Create an order: POST /orders
 # curl example:
 #   curl -i -X POST "$API_BASE/orders" \
 #     -H "Content-Type: application/json" \
 #     -d '{"customer":"Asha","item":"Cold coffee","quantity":2}'
 
-# List orders — GET /orders
+# List orders: GET /orders
 # curl example:
 #   curl -i -X GET "$API_BASE/orders"

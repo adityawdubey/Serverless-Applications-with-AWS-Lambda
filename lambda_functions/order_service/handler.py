@@ -19,7 +19,7 @@ def _to_jsonable(value):
 
 
 def _resp(status, body):
-    # CORS lives on the API (the stack), not here — so we only set Content-Type.
+    # CORS lives on the API (the stack), not here, so we only set Content-Type.
     return {
         "statusCode": status,
         "headers": {"Content-Type": "application/json"},
@@ -49,7 +49,7 @@ def create_order(event):
 
 
 def list_orders():
-    # scan() reads the whole table — fine here; use Query with a key in production.
+    # scan() reads the whole table (fine here); use Query with a key in production.
     result = table.scan()
     items = sorted(
         result.get("Items", []),

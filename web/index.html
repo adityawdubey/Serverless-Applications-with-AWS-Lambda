@@ -148,7 +148,7 @@
         t.textContent = "Order #" + String(created.orderId).slice(0, 8) + " created · 201";
         t.style.display = "block";
         setTimeout(() => (t.style.display = "none"), 2500);
-        await loadOrders(); // re-fetch so the new order appears — the payoff
+        await loadOrders(); // re-fetch so the new order appears (the payoff)
       } else {
         $("err").textContent = "Error: " + (created.message || res.status);
       }

@@ -7,7 +7,7 @@ import handler
 def test_resp_shape_and_headers():
     out = handler._resp(201, {"ok": True})
     assert out["statusCode"] == 201
-    # CORS lives only on the API — the function sets Content-Type and nothing else.
+    # CORS lives only on the API; the function sets Content-Type and nothing else.
     assert out["headers"] == {"Content-Type": "application/json"}
     assert json.loads(out["body"]) == {"ok": True}
 

@@ -14,7 +14,7 @@ from constructs import Construct
 
 
 class OrderServiceStack(Stack):
-    """The Order Service — one microservice of a restaurant application.
+    """The Order Service: one microservice of a restaurant application.
 
     Frontend on a public S3 static-website bucket (HTTP); data path is
     API Gateway -> Lambda -> DynamoDB. The page (S3, http) and the API
@@ -55,7 +55,7 @@ class OrderServiceStack(Stack):
         self.table.grant_read_write_data(self.fn)
 
         # The page is served from S3 (a different origin than execute-api), so the
-        # browser makes a cross-origin request — CORS on the API is required.
+        # browser makes a cross-origin request, so CORS on the API is required.
         http_api = apigwv2.HttpApi(
             self,
             "OrderHttpApi",

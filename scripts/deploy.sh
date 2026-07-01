@@ -13,4 +13,4 @@ cdk bootstrap                        # one-time per account/region
 cdk deploy --require-approval never   # prints SiteUrl / ApiUrl / TableName
 
 echo
-echo "Done — open the SiteUrl above (the http:// S3 website endpoint)."
+echo "Done. Open the SiteUrl above (the http:// S3 website endpoint)."

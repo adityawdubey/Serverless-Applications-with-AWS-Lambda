@@ -10,7 +10,7 @@ def _template():
 
 
 def test_http_api_has_cors():
-    # Cross-origin (S3 http page -> execute-api https) — the API enables CORS.
+    # Cross-origin (S3 http page -> execute-api https); the API enables CORS.
     _template().has_resource_properties(
         "AWS::ApiGatewayV2::Api",
         {

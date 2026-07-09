@@ -7,61 +7,138 @@
 <style>
   :root {
     --accent1: #FFB23E; --accent2: #FB8500; --accentText: #B5650A;
-    --ink: #16273C; --body: #46566B; --muted: #8C97A8;
-    --canvas: #F6F7FB; --card: #ffffff; --line: #E7EAF0;
+    --ink: #1A2432; --body: #4B5769; --muted: #939DAD;
+    --canvas: #F4F6FA; --card: #ffffff; --line: #EBEEF4;
+    --field: #FBFCFE; --fieldLine: #E3E7EF;
+    --ok: #157347; --okBg: #E7F7ED;
+    --radius: 18px;
+    --shadow: 0 1px 2px rgba(20,30,45,.05), 0 14px 30px -18px rgba(20,30,45,.28);
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--canvas); color: var(--body);
-    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 28px 20px 60px; }
-  header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
-  .tile { width: 44px; height: 44px; border-radius: 12px;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2)); }
-  h1 { font-size: 22px; color: var(--ink); margin: 0; }
-  .sub { color: var(--muted); font-size: 13px; margin: 2px 0 0; }
-  .pipe { display: inline-block; margin-top: 10px; padding: 5px 10px;
-    background: #FFF3E2; color: var(--accentText); border-radius: 999px;
-    font: 12px/1 ui-monospace, Menlo, monospace; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }
+  body { margin: 0; min-height: 100vh; color: var(--body);
+    background:
+      radial-gradient(900px 420px at 92% -8%, #FFEDD3 0%, transparent 55%),
+      radial-gradient(700px 380px at 0% 0%, #EEF2FB 0%, transparent 45%),
+      var(--canvas);
+    font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 44px 22px 72px; }
+
+  header { display: flex; align-items: center; gap: 15px; margin-bottom: 26px; }
+  .tile { width: 50px; height: 50px; border-radius: 15px; flex: none;
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    box-shadow: 0 8px 20px -4px rgba(251,133,0,.45); }
+  h1 { font-size: 26px; line-height: 1.1; color: var(--ink); margin: 0;
+    font-weight: 700; letter-spacing: -.02em; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 20px; align-items: start; }
   @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
   .card { background: var(--card); border: 1px solid var(--line);
-    border-radius: 16px; padding: 18px; box-shadow: 0 1px 2px rgba(16,39,60,.04); }
-  .panelhead { display: flex; justify-content: space-between; align-items: center; }
-  .panelhead h2 { font-size: 16px; color: var(--ink); margin: 0; }
-  .route { font: 12px/1 ui-monospace, Menlo, monospace; color: var(--muted); }
-  label { display: block; font-size: 13px; color: var(--ink); margin: 12px 0 4px; }
-  input, select { width: 100%; padding: 10px; border: 1px solid var(--line);
-    border-radius: 10px; font-size: 14px; }
-  button { cursor: pointer; border: 0; border-radius: 10px; color: #fff;
-    font-size: 14px; font-weight: 600; padding: 11px; }
-  .place { width: 100%; margin-top: 16px;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2)); }
-  .refresh { background: var(--ink); padding: 7px 12px; }
-  .toast { margin-top: 12px; padding: 10px; border-radius: 10px;
-    background: #E9F8EF; color: #1B7F47; font-size: 13px; display: none; }
-  .err { margin-top: 12px; color: #B23B3B; font-size: 13px; }
-  .order { display: flex; gap: 12px; align-items: center; padding: 12px 0;
-    border-top: 1px solid var(--line); }
+    border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+  .panelhead { display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; margin-bottom: 6px; }
+  .panelhead h2 { font-size: 16px; color: var(--ink); margin: 0; font-weight: 650;
+    letter-spacing: -.01em; display: flex; align-items: center; gap: 9px; }
+  .panelhead .right { display: flex; align-items: center; gap: 10px; }
+  .count { font-size: 12px; color: var(--accentText); background: #FFF1DD;
+    padding: 2px 10px; border-radius: 999px; font-weight: 700;
+    transition: transform .2s cubic-bezier(.34,1.56,.64,1); }
+  .count.bump { transform: scale(1.28); }
+  .route { font: 11.5px/1 ui-monospace, "SF Mono", Menlo, monospace; color: var(--muted);
+    background: #F3F5F9; padding: 4px 9px; border-radius: 7px; letter-spacing: -.02em; }
+
+  label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink);
+    margin: 16px 0 6px; letter-spacing: -.005em; }
+  input, select { width: 100%; padding: 11px 13px; border: 1px solid var(--fieldLine);
+    border-radius: 12px; font-size: 14px; color: var(--ink); background: var(--field);
+    font-family: inherit; transition: border-color .15s, box-shadow .15s, background .15s; }
+  input::placeholder { color: #B4BCC8; }
+  input:hover, select:hover { border-color: #D2D8E2; }
+  input:focus, select:focus { outline: 0; background: #fff; border-color: var(--accent2);
+    box-shadow: 0 0 0 3.5px rgba(251,133,0,.14); }
+
+  button { cursor: pointer; border: 0; border-radius: 12px; color: #fff;
+    font-size: 14px; font-weight: 600; font-family: inherit; padding: 12px;
+    transition: transform .1s ease, box-shadow .18s ease, filter .18s ease; }
+  button:active { transform: translateY(1px); }
+  .place { width: 100%; margin-top: 20px; display: flex; align-items: center;
+    justify-content: center; gap: 8px; letter-spacing: .01em;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    box-shadow: 0 10px 22px -8px rgba(251,133,0,.6); }
+  .place:hover { transform: translateY(-1px); filter: brightness(1.02);
+    box-shadow: 0 14px 28px -8px rgba(251,133,0,.65); }
+  .place:disabled { filter: grayscale(.35) brightness(.98); cursor: default;
+    transform: none; box-shadow: none; }
+  .refresh { background: #F3F5F9; color: var(--body); padding: 7px 14px; font-size: 13px; }
+  .refresh:hover { background: #E9EDF4; }
+  .spinner { width: 15px; height: 15px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.45); border-top-color: #fff;
+    animation: spin .6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast { margin-top: 14px; padding: 11px 13px; border-radius: 12px;
+    background: var(--okBg); color: var(--ok); font-size: 13px; font-weight: 600;
+    border: 1px solid #CDEBD8; display: flex; align-items: center; gap: 8px;
+    opacity: 0; transform: translateY(6px); pointer-events: none; max-height: 0;
+    overflow: hidden; padding-top: 0; padding-bottom: 0; margin-top: 0;
+    transition: opacity .28s ease, transform .28s ease, max-height .28s ease,
+      margin-top .28s ease, padding .28s ease; }
+  .toast.show { opacity: 1; transform: translateY(0); max-height: 60px;
+    margin-top: 14px; padding-top: 11px; padding-bottom: 11px; }
+  .err { margin-top: 12px; color: #C0392B; font-size: 13px; }
+
+  .list { margin-top: 14px; }
+  .order { display: flex; gap: 13px; align-items: center; padding: 13px 12px;
+    margin: 0 -12px; border-radius: 12px; border-top: 1px solid var(--line);
+    transition: background .15s; }
+  .order:hover { background: #FAFBFD; }
   .order:first-child { border-top: 0; }
-  .avatar { width: 36px; height: 36px; border-radius: 50%; flex: none;
-    background: #FFF3E2; color: var(--accentText); display: flex;
-    align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
-  .order .main { flex: 1; }
-  .order .title { color: var(--ink); font-weight: 600; font-size: 14px; }
-  .order .meta { color: var(--muted); font: 12px/1.4 ui-monospace, Menlo, monospace; }
-  .pill { font-size: 12px; color: var(--accentText); background: #FFF3E2;
-    padding: 3px 8px; border-radius: 999px; }
-  footer { margin-top: 22px; color: var(--muted);
-    font: 12px ui-monospace, Menlo, monospace; }
+  .avatar { width: 40px; height: 40px; border-radius: 12px; flex: none;
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; letter-spacing: .02em;
+    box-shadow: 0 3px 8px -2px rgba(20,30,45,.3); }
+  .order .main { flex: 1; min-width: 0; }
+  .order .title { color: var(--ink); font-weight: 600; font-size: 14.5px;
+    display: flex; align-items: center; gap: 8px; letter-spacing: -.01em; }
+  .order .meta { color: var(--muted); font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+    margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    letter-spacing: -.02em; }
+  .pill { font-size: 11.5px; font-weight: 600; padding: 4px 11px; border-radius: 999px;
+    flex: none; color: var(--ok); background: var(--okBg); }
+
+  /* entrance + "just landed" glow — the live-demo payoff */
+  .order.enter { animation: slideIn .38s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+  .order.fresh { animation: slideIn .38s cubic-bezier(.22,1,.36,1) both, glow 2s ease .35s 1; }
+  @keyframes glow {
+    0% { background: #FFF4E4; box-shadow: inset 3px 0 0 var(--accent2); }
+    100% { background: transparent; box-shadow: inset 3px 0 0 transparent; }
+  }
+
+  /* skeleton loading rows */
+  .skel { display: flex; gap: 13px; align-items: center; padding: 13px 0;
+    border-top: 1px solid var(--line); }
+  .skel:first-child { border-top: 0; }
+  .skel .dot { width: 40px; height: 40px; border-radius: 12px; flex: none; }
+  .skel .bar { height: 10px; border-radius: 6px; }
+  .skel .b1 { width: 55%; margin-bottom: 9px; } .skel .b2 { width: 32%; }
+  .shimmer { background: linear-gradient(90deg, #EEF1F6 25%, #F7F9FC 37%, #EEF1F6 63%);
+    background-size: 400% 100%; animation: sh 1.3s ease infinite; }
+  @keyframes sh { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+  .empty { text-align: center; color: var(--muted); padding: 34px 12px; font-size: 13.5px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
 </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="tile"></div>
-      <div>
-        <h1>Order service</h1>
-      </div>
+      <h1>Order service</h1>
     </header>
 
     <div class="grid">
@@ -74,6 +151,10 @@
           <option>Margherita pizza</option>
           <option>Cold coffee</option>
           <option>Paneer wrap</option>
+          <option>Veg burger</option>
+          <option>Masala dosa</option>
+          <option>Chicken biryani</option>
+          <option>Chocolate brownie</option>
         </select>
         <label for="quantity">Quantity</label>
         <input id="quantity" type="number" min="1" value="1" />
@@ -83,11 +164,14 @@
       </section>
 
       <section class="card">
-        <div class="panelhead"><h2>Orders</h2>
-          <span><span class="route">GET /orders</span>
-            <button class="refresh" id="refreshBtn">Refresh</button></span>
+        <div class="panelhead">
+          <h2>Orders <span class="count" id="count">0</span></h2>
+          <span class="right">
+            <span class="route">GET /orders</span>
+            <button class="refresh" id="refreshBtn">Refresh</button>
+          </span>
         </div>
-        <div id="list"></div>
+        <div class="list" id="list"></div>
       </section>
     </div>
   </div>
@@ -96,69 +180,133 @@
 <script>
   // Cross-origin: the page is on S3 (http) and the API is on execute-api (https),
   // so we call the API's absolute URL. config.js is generated at deploy time and
-  // sets window.API_BASE to the real endpoint; the fallback keeps local edits working.
+  // sets window.API_BASE to the real endpoint.
   const API_BASE = window.API_BASE || "";
+  // No real API wired up? Fall back to an in-memory demo so the page is fully
+  // interactive for rehearsing the talk offline. (Never runs once deployed.)
+  const DEMO = !API_BASE;
 
   const $ = (id) => document.getElementById(id);
 
-  function initials(name) {
-    return (name || "?").trim().slice(0, 2).toUpperCase();
+  // --- little delight helpers -------------------------------------------
+  const AVATAR_COLORS = ["#FB8500","#2A9D8F","#E76F51","#6A5ACD","#3D8BFD","#D6336C","#0CA678"];
+  function avatarColor(name) {
+    let h = 0; for (const c of (name || "?")) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return AVATAR_COLORS[h % AVATAR_COLORS.length];
+  }
+  function initials(name) { return (name || "?").trim().slice(0, 2).toUpperCase(); }
+  function relTime(iso) {
+    if (!iso) return "";
+    const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    if (s < 5) return "just now";
+    if (s < 60) return Math.floor(s) + "s ago";
+    if (s < 3600) return Math.floor(s / 60) + "m ago";
+    if (s < 86400) return Math.floor(s / 3600) + "h ago";
+    return Math.floor(s / 86400) + "d ago";
   }
 
-  async function loadOrders() {
+  function skeleton(n) {
+    return Array.from({ length: n }).map(() =>
+      '<div class="skel"><div class="dot shimmer"></div>' +
+      '<div class="main" style="flex:1"><div class="bar b1 shimmer"></div>' +
+      '<div class="bar b2 shimmer"></div></div></div>').join("");
+  }
+
+  function render(orders, freshId) {
+    const list = $("list");
+    const c = $("count");
+    c.textContent = orders.length;
+    c.classList.remove("bump"); void c.offsetWidth; c.classList.add("bump");
+
+    if (!orders.length) {
+      list.innerHTML = '<div class="empty">' +
+        "No orders yet. Place one on the left to see it appear here.</div>";
+      return;
+    }
+    list.innerHTML = orders.map((o) => {
+      const fresh = o.orderId === freshId;
+      return '<div class="order ' + (fresh ? "fresh" : "enter") + '">' +
+        '<div class="avatar" style="background:' + avatarColor(o.customer) + '">' + initials(o.customer) + "</div>" +
+        '<div class="main">' +
+          '<div class="title">' + (o.item || "") + " ×" + (o.quantity || 1) + "</div>" +
+          '<div class="meta">#' + String(o.orderId).slice(0, 8) + " · " + (o.customer || "") +
+            (o.createdAt ? " · " + relTime(o.createdAt) : "") + "</div>" +
+        "</div>" +
+        '<span class="pill">' + (o.status || "New") + "</span></div>";
+    }).join("");
+  }
+
+  // --- demo-mode in-memory store ----------------------------------------
+  const demoStore = [
+    { orderId: "seed-a1b2c3d4", createdAt: new Date(Date.now() - 240000).toISOString(),
+      status: "New", customer: "Ravi", item: "Margherita pizza", quantity: 2 },
+    { orderId: "seed-e5f6a7b8", createdAt: new Date(Date.now() - 90000).toISOString(),
+      status: "New", customer: "Meera", item: "Cold coffee", quantity: 1 },
+  ];
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  async function apiList() {
+    if (DEMO) { await wait(450); return demoStore.slice().sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1)); }
+    const res = await fetch(API_BASE + "/orders");
+    return res.json();
+  }
+  async function apiCreate(body) {
+    if (DEMO) {
+      await wait(500);
+      const item = { orderId: crypto.randomUUID(), createdAt: new Date().toISOString(), status: "New", ...body };
+      demoStore.push(item);
+      return { status: 201, body: item };
+    }
+    const res = await fetch(API_BASE + "/orders", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+    return { status: res.status, body: await res.json() };
+  }
+
+  // --- flows ------------------------------------------------------------
+  async function loadOrders(freshId) {
     $("err").textContent = "";
+    if (!freshId) $("list").innerHTML = skeleton(3);
     try {
-      const res = await fetch(API_BASE + "/orders");
-      const orders = await res.json();
-      const list = $("list");
-      list.innerHTML = "";
-      orders.forEach((o) => {
-        const row = document.createElement("div");
-        row.className = "order";
-        row.innerHTML =
-          '<div class="avatar">' + initials(o.customer) + "</div>" +
-          '<div class="main">' +
-            '<div class="title">' + o.item + " ×" + o.quantity + "</div>" +
-            '<div class="meta">#' + String(o.orderId).slice(0, 8) + " · " + (o.customer || "") + "</div>" +
-          "</div>" +
-          '<span class="pill">' + (o.status || "New") + "</span>";
-        list.appendChild(row);
-      });
+      render(await apiList(), freshId);
     } catch (e) {
+      $("list").innerHTML = "";
       $("err").textContent = "Could not load orders: " + e.message;
     }
   }
 
   async function placeOrder() {
     $("err").textContent = "";
+    const btn = $("placeBtn");
     const body = {
-      customer: $("customer").value,
+      customer: $("customer").value || "Guest",
       item: $("item").value,
-      quantity: Number($("quantity").value),
+      quantity: Number($("quantity").value) || 1,
     };
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Placing…';
     try {
-      const res = await fetch(API_BASE + "/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const created = await res.json();
-      if (res.status === 201) {
+      const { status, body: created } = await apiCreate(body);
+      if (status === 201) {
         const t = $("toast");
-        t.textContent = "Order #" + String(created.orderId).slice(0, 8) + " created · 201";
-        t.style.display = "block";
-        setTimeout(() => (t.style.display = "none"), 2500);
-        await loadOrders(); // re-fetch so the new order appears (the payoff)
+        t.innerHTML = "Order #" + String(created.orderId).slice(0, 8) + " created · 201";
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2800);
+        $("customer").value = "";
+        await loadOrders(created.orderId); // highlight the new one — the payoff
       } else {
-        $("err").textContent = "Error: " + (created.message || res.status);
+        $("err").textContent = "Error: " + (created.message || status);
       }
     } catch (e) {
       $("err").textContent = "Request failed: " + e.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Place order";
     }
   }
 
   $("placeBtn").addEventListener("click", placeOrder);
-  $("refreshBtn").addEventListener("click", loadOrders);
+  $("refreshBtn").addEventListener("click", () => loadOrders());
   loadOrders();
 </script>
 </body>

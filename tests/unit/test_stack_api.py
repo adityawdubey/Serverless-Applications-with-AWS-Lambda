@@ -32,5 +32,4 @@ def test_exactly_two_routes():
 def test_outputs_present():
     outputs = _template().find_outputs("*")
     assert "ApiUrl" in outputs
-    assert "TableName" in outputs
     assert "SiteUrl" in outputs

@@ -10,7 +10,7 @@ source .venv/bin/activate
 pip install -q -r requirements.txt
 
 cdk bootstrap                        # one-time per account/region
-cdk deploy --require-approval never   # prints SiteUrl / ApiUrl / TableName
+cdk deploy --require-approval never   # prints SiteUrl / ApiUrl
 
 echo
 echo "Done. Open the SiteUrl above (the http:// S3 website endpoint)."

@@ -112,4 +112,3 @@ class OrderServiceStack(Stack):
 
         CfnOutput(self, "SiteUrl", value=site_bucket.bucket_website_url)
         CfnOutput(self, "ApiUrl", value=http_api.url or "")
-        CfnOutput(self, "TableName", value=self.table.table_name)

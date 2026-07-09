@@ -73,7 +73,7 @@ Or run the CDK steps yourself:
 
 ```bash
 cdk bootstrap          # one-time per account/region
-cdk deploy             # prints SiteUrl, ApiUrl, and TableName
+cdk deploy             # prints SiteUrl and ApiUrl
 ```
 
 When it finishes, open the **`SiteUrl`** (the S3 website endpoint, `http://…`) in

@@ -93,7 +93,9 @@ class OrderServiceStack(Stack):
             ),
             encryption=s3.BucketEncryption.S3_MANAGED,
             removal_policy=RemovalPolicy.DESTROY,
-            auto_delete_objects=True,  # empty the bucket on `cdk destroy`
+            # No auto_delete_objects: that adds a custom-resource Lambda just to
+            # empty the bucket on destroy. scripts/delete.sh empties it explicitly
+            # instead (the "empty, then delete" pattern real teardowns use).
         )
 
         # Upload web/ plus a generated config.js that carries the real API base

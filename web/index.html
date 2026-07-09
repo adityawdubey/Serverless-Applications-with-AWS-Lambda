@@ -88,9 +88,13 @@
     margin-top: 14px; padding-top: 11px; padding-bottom: 11px; }
   .err { margin-top: 12px; color: #C0392B; font-size: 13px; }
 
-  .list { margin-top: 14px; }
+  .list { margin-top: 14px; max-height: 288px; overflow-y: auto; padding-right: 4px;
+    scrollbar-width: thin; scrollbar-color: #D7DCE5 transparent; }
+  .list::-webkit-scrollbar { width: 8px; }
+  .list::-webkit-scrollbar-thumb { background: #D7DCE5; border-radius: 8px; }
+  .list::-webkit-scrollbar-track { background: transparent; }
   .order { display: flex; gap: 13px; align-items: center; padding: 13px 12px;
-    margin: 0 -12px; border-radius: 12px; border-top: 1px solid var(--line);
+    margin: 0; border-radius: 12px; border-top: 1px solid var(--line);
     transition: background .15s; }
   .order:hover { background: #FAFBFD; }
   .order:first-child { border-top: 0; }
@@ -101,6 +105,7 @@
   .order .main { flex: 1; min-width: 0; }
   .order .title { color: var(--ink); font-weight: 600; font-size: 14.5px;
     display: flex; align-items: center; gap: 8px; letter-spacing: -.01em; }
+  .order .emoji { font-size: 16px; }
   .order .meta { color: var(--muted); font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
     margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     letter-spacing: -.02em; }
@@ -137,7 +142,7 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="tile"></div>
+      <div class="tile">🍽️</div>
       <h1>Order service</h1>
     </header>
 
@@ -155,6 +160,11 @@
           <option>Masala dosa</option>
           <option>Chicken biryani</option>
           <option>Chocolate brownie</option>
+          <option>Veg fried rice</option>
+          <option>Butter naan</option>
+          <option>Mango lassi</option>
+          <option>Gulab jamun</option>
+          <option>Spring rolls</option>
         </select>
         <label for="quantity">Quantity</label>
         <input id="quantity" type="number" min="1" value="1" />
@@ -189,6 +199,16 @@
   const $ = (id) => document.getElementById(id);
 
   // --- little delight helpers -------------------------------------------
+  const EMOJI = {
+    pizza: "🍕", coffee: "☕", wrap: "🌯", burger: "🍔", dosa: "🥞",
+    biryani: "🍛", brownie: "🍫", rice: "🍚", naan: "🫓", lassi: "🥭",
+    jamun: "🍮", roll: "🥟", tea: "🍵",
+  };
+  function emojiFor(item) {
+    const k = (item || "").toLowerCase();
+    const hit = Object.keys(EMOJI).find((w) => k.includes(w));
+    return hit ? EMOJI[hit] : "🧾";
+  }
   const AVATAR_COLORS = ["#FB8500","#2A9D8F","#E76F51","#6A5ACD","#3D8BFD","#D6336C","#0CA678"];
   function avatarColor(name) {
     let h = 0; for (const c of (name || "?")) h = (h * 31 + c.charCodeAt(0)) >>> 0;
@@ -228,7 +248,8 @@
       return '<div class="order ' + (fresh ? "fresh" : "enter") + '">' +
         '<div class="avatar" style="background:' + avatarColor(o.customer) + '">' + initials(o.customer) + "</div>" +
         '<div class="main">' +
-          '<div class="title">' + (o.item || "") + " ×" + (o.quantity || 1) + "</div>" +
+          '<div class="title"><span class="emoji">' + emojiFor(o.item) + "</span>" +
+            (o.item || "") + " ×" + (o.quantity || 1) + "</div>" +
           '<div class="meta">#' + String(o.orderId).slice(0, 8) + " · " + (o.customer || "") +
             (o.createdAt ? " · " + relTime(o.createdAt) : "") + "</div>" +
         "</div>" +

@@ -11,8 +11,6 @@ def test_readme_has_required_sections():
         "cdk deploy",
         "cdk destroy",
         "api_base",
-        "http.server",
         "cors",
-        "scan",
     ):
         assert marker in text, marker

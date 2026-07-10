@@ -10,6 +10,8 @@ This demo builds **one microservice**, the **Order Service**, of a larger
 restaurant application. A full app would also have Menu, Payments, and Kitchen
 services; here we build only this one, end to end.
 
+![Order Service architecture](docs/order-service-architecture.png)
+
 The page is hosted on a **public S3 static website** (HTTP), and the API is a
 separate **API Gateway → Lambda → DynamoDB** path. Because the page (S3, `http`)
 and the API (`execute-api`, `https`) live on **different origins**, the browser

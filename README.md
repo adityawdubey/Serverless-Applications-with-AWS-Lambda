@@ -1,7 +1,7 @@
 # Serverless Applications with AWS Lambda
 
-A small demo project that builds the **Order Service** — one microservice of a
-restaurant application — end to end with the AWS CDK: **API Gateway → Lambda →
+A small demo project that builds the **Order Service**, one microservice of a
+restaurant application, end to end with the AWS CDK: **API Gateway → Lambda →
 DynamoDB**, plus a static frontend hosted on S3.
 
 ## The Order Service

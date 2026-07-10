@@ -1,0 +1,128 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="EventBridge Example" id="eb_example">
+    <mxGraphModel dx="1245" dy="859" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="580" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;" value="" vertex="1">
+          <mxGeometry height="580" width="1400" as="geometry" />
+        </mxCell>
+        <mxCell id="order" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda" value="" vertex="1">
+          <mxGeometry height="60" width="60" x="57" y="157.5" as="geometry" />
+        </mxCell>
+        <mxCell id="order_name" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;b style=&#39;font-size:14px;color:#1F2937;&#39;&gt;Order service&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="120" x="24" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="order_sub" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;i style=&#39;font-size:12px;color:#6B7280;&#39;&gt;Producer&lt;/i&gt;" vertex="1">
+          <mxGeometry height="18" width="100" x="31" y="242" as="geometry" />
+        </mxCell>
+        <mxCell id="eb_container" parent="1" style="rounded=16;whiteSpace=wrap;html=1;fillColor=#FDF2F8;strokeColor=#FBCFE8;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="427" width="907" x="179" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="eb_icon" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge" value="" vertex="1">
+          <mxGeometry height="28" width="28" x="210" y="88" as="geometry" />
+        </mxCell>
+        <mxCell id="eb_title" parent="1" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;b style=&#39;font-size:16px;color:#BE185D;&#39;&gt;Amazon EventBridge&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="220" x="248" y="91" as="geometry" />
+        </mxCell>
+        <mxCell id="step_receive" parent="1" style="rounded=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F472B6;strokeWidth=1.5;shadow=1;shadowColor=#00000010;fontColor=#1F2937;fontSize=13;fontStyle=1;verticalAlign=middle;" value="Receive" vertex="1">
+          <mxGeometry height="45" width="100" x="221.5" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="step_filter" parent="1" style="rounded=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F472B6;strokeWidth=1.5;shadow=1;shadowColor=#00000010;fontColor=#1F2937;fontSize=13;fontStyle=1;verticalAlign=middle;" value="Filter" vertex="1">
+          <mxGeometry height="45" width="100" x="375" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="step_transform" parent="1" style="rounded=12;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#F9A8D4;strokeWidth=1.5;dashed=1;shadow=0;fontColor=#9CA3AF;fontSize=12;fontStyle=2;verticalAlign=middle;" value="&lt;i style=&#39;font-size:12px;color:#9CA3AF;&#39;&gt;Transform&lt;br&gt;&lt;span style=&#39;font-size:9px;font-style:normal;&#39;&gt;(optional)&lt;/span&gt;&lt;/i&gt;" vertex="1">
+          <mxGeometry height="45" width="100" x="530" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="step_route" parent="1" style="rounded=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F472B6;strokeWidth=1.5;shadow=1;shadowColor=#00000010;fontColor=#1F2937;fontSize=13;fontStyle=1;verticalAlign=middle;" value="Route" vertex="1">
+          <mxGeometry height="45" width="100" x="687.5" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="step_dispatch1" parent="1" style="rounded=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F472B6;strokeWidth=1.5;shadow=1;shadowColor=#00000010;fontColor=#1F2937;fontSize=13;fontStyle=1;verticalAlign=middle;" value="Dispatch" vertex="1">
+          <mxGeometry height="45" width="100" x="855" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="step_dispatch2" parent="1" style="rounded=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F472B6;strokeWidth=1.5;shadow=1;shadowColor=#00000010;fontColor=#1F2937;fontSize=13;fontStyle=1;verticalAlign=middle;" value="Dispatch" vertex="1">
+          <mxGeometry height="45" width="100" x="855" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="e_r_f" edge="1" parent="1" source="step_receive" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#F472B6;" target="step_filter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_f_t" edge="1" parent="1" source="step_filter" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#F472B6;dashed=1;" target="step_transform">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_t_r" edge="1" parent="1" source="step_transform" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#F472B6;dashed=1;" target="step_route">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_r_d1" edge="1" parent="1" source="step_route" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#F472B6;" target="step_dispatch1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="187" />
+              <mxPoint x="840" y="142" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_r_d2" edge="1" parent="1" source="step_route" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#F472B6;" target="step_dispatch2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="187" />
+              <mxPoint x="840" y="237" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eg_receive" parent="1" style="rounded=8;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FDA4AF;strokeWidth=1;align=left;verticalAlign=top;spacing=8;" value="&lt;div style=&#39;font-family:monospace;font-size:10px;color:#374151;text-align:left;line-height:1.5;&#39;&gt;&lt;b style=&#39;color:#BE185D;&#39;&gt;Incoming Event&lt;/b&gt;&lt;br&gt;{&lt;br&gt;&amp;nbsp;&quot;source&quot;:&amp;nbsp;&quot;orders&quot;,&lt;br&gt;&amp;nbsp;&quot;detail-type&quot;:&amp;nbsp;&quot;OrderPlaced&quot;,&lt;br&gt;&amp;nbsp;&quot;detail&quot;:&amp;nbsp;{&lt;br&gt;&amp;nbsp;&amp;nbsp;&quot;orderId&quot;:&amp;nbsp;&quot;101&quot;,&lt;br&gt;&amp;nbsp;&amp;nbsp;&quot;item&quot;:&amp;nbsp;&quot;Burger&quot;&lt;br&gt;&amp;nbsp;}&lt;br&gt;}&lt;/div&gt;" vertex="1">
+          <mxGeometry height="171" width="143" x="200" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="e_call1" edge="1" parent="1" source="step_receive" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=1;strokeColor=#FDA4AF;dashed=1;endArrow=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="eg_receive">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eg_filter" parent="1" style="rounded=8;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FDA4AF;strokeWidth=1;align=left;verticalAlign=top;spacing=8;" value="&lt;div style=&quot;font-family: monospace; font-size: 10px; color: rgb(55, 65, 81); text-align: left; line-height: 1.5;&quot;&gt;&lt;b style=&quot;color: rgb(190, 24, 93);&quot;&gt;Event Pattern (Rule)&lt;/b&gt;&lt;br&gt;{&lt;br&gt;&amp;nbsp;&quot;source&quot;:&amp;nbsp;[&amp;nbsp;&quot;orders&quot;&amp;nbsp;],&lt;br&gt;&amp;nbsp;&quot;detail-type&quot;:&amp;nbsp;[&lt;br&gt;&amp;nbsp;&amp;nbsp;&quot;OrderPlaced&quot;&lt;br&gt;&amp;nbsp;]&lt;br&gt;}&lt;br&gt;&lt;br&gt;&lt;i style=&quot;color: rgb(5, 150, 105);&quot;&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;font-family: monospace; font-size: 10px; color: rgb(55, 65, 81); text-align: left; line-height: 1.5;&quot;&gt;&lt;i style=&quot;color: rgb(5, 150, 105);&quot;&gt;Matches! ✓&lt;/i&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="171" width="150" x="350" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="e_call2" edge="1" parent="1" source="step_filter" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=1;strokeColor=#FDA4AF;dashed=1;endArrow=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="eg_filter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eg_transform" parent="1" style="rounded=8;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#F9A8D4;strokeWidth=1;align=left;verticalAlign=top;spacing=8;" value="&lt;div style=&#39;font-family:monospace;font-size:10px;color:#374151;text-align:left;line-height:1.5;&#39;&gt;&lt;b style=&#39;color:#BE185D;&#39;&gt;Input Transformer&lt;/b&gt;&lt;br&gt;&lt;i style=&#39;color:#6B7280;&#39;&gt;(used for SNS target)&lt;/i&gt;&lt;br&gt;&lt;br&gt;Extract:&lt;br&gt;orderId = $.detail.orderId&lt;br&gt;item = $.detail.item&lt;br&gt;&lt;br&gt;Output:&lt;br&gt;&lt;i style=&#39;color:#059669;&#39;&gt;&quot;Order 101: Burger!&quot;&lt;/i&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="171" width="150" x="505" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="e_call3" edge="1" parent="1" source="step_transform" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=1;strokeColor=#F9A8D4;dashed=1;endArrow=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="eg_transform">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eg_route" parent="1" style="rounded=8;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#FDA4AF;strokeWidth=1;align=left;verticalAlign=top;spacing=8;" value="&lt;div style=&#39;font-family:monospace;font-size:10px;color:#374151;text-align:left;line-height:1.5;&#39;&gt;&lt;b style=&#39;color:#BE185D;&#39;&gt;Targets&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. KitchenFunction&lt;br&gt;&lt;span style=&#39;color:#6B7280;&#39;&gt;→ Full JSON event&lt;/span&gt;&lt;br&gt;&lt;br&gt;2. NotifyTopic (SNS)&lt;br&gt;&lt;span style=&#39;color:#6B7280;&#39;&gt;→ Transformed string&lt;br&gt;&lt;/span&gt;&lt;span style=&#39;color:#6B7280;font-size:9px;&#39;&gt;(SMS + email protocols)&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="171" width="155" x="660" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="e_call4" edge="1" parent="1" source="step_route" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=1;strokeColor=#FDA4AF;dashed=1;endArrow=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="eg_route">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kitchen" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda" value="" vertex="1">
+          <mxGeometry height="60" width="60" x="1128" y="113" as="geometry" />
+        </mxCell>
+        <mxCell id="kitchen_name" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;b style=&#39;font-size:14px;color:#1F2937;&#39;&gt;Kitchen service&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="122" x="1097" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="kitchen_sub" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;i style=&#39;font-size:11px;color:#6B7280;&#39;&gt;Event consumer A&lt;/i&gt;" vertex="1">
+          <mxGeometry height="18" width="102" x="1107" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="notify" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sns" value="" vertex="1">
+          <mxGeometry height="60" width="60" x="1128" y="207.5" as="geometry" />
+        </mxCell>
+        <mxCell id="notify_name" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;b style=&#39;font-size:14px;color:#1F2937;&#39;&gt;Notify SNS Topic&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="142" x="1103" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="notify_purpose" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;i style=&quot;font-size: 11px; color: rgb(107, 114, 128);&quot;&gt;SMS &amp;amp; email protocols&lt;br&gt;&lt;br&gt;&lt;/i&gt;" vertex="1">
+          <mxGeometry height="32" width="162" x="1077" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="e_in" edge="1" parent="1" source="order" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#9CA3AF;labelBackgroundColor=none;align=center;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;spacingBottom=5;" target="step_receive" value="&lt;i style=&#39;font-size:11px;color:#6B7280;&#39;&gt;putEvents()&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_out1" edge="1" parent="1" source="step_dispatch1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#9CA3AF;labelBackgroundColor=none;align=center;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;spacingBottom=5;" target="kitchen" value="&lt;i style=&#39;font-size:11px;color:#6B7280;&#39;&gt;Invoke · Full JSON&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_out2" edge="1" parent="1" source="step_dispatch2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#9CA3AF;labelBackgroundColor=none;align=center;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;spacingBottom=5;" target="notify" value="&lt;i style=&#39;font-size:11px;color:#6B7280;&#39;&gt;Publish · String&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fig_caption" value="&lt;i style='font-size:14px;color:#4B5563;'&gt;Main components of an event carrier that receives events from producers and delivers them to consumers.&lt;br&gt;Example: Tracing a restaurant order through the EventBridge internals&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry height="30" width="700" x="350" y="530" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

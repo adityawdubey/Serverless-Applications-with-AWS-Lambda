@@ -1,0 +1,183 @@
+<mxfile host="draw.io" modified="2026-07-05" type="device">
+  <diagram name="Decouple Lambdas" id="decouple-lambdas">
+    <mxGraphModel dx="1100" dy="1000" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="880" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- BACKGROUND -->
+        <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFBFC;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1100" height="880" as="geometry"/>
+        </mxCell>
+
+        <!-- TOP ACCENT BAR -->
+        <mxCell id="accent_bar" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#232F3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1100" height="6" as="geometry"/>
+        </mxCell>
+
+        <!-- TITLE -->
+        <mxCell id="subtitle" value="RESILIENCE" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontColor=#E7157B;fontStyle=1;letterSpacing=4;" vertex="1" parent="1">
+          <mxGeometry x="60" y="30" width="200" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="title" value="&lt;font style='font-size:30px;color:#1A2332;font-weight:800;'&gt;Decouple — don't chain Lambdas&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="52" width="750" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- SQS Hero Icon -->
+        <mxCell id="hero_circle" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FCE7F3;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="980" y="25" width="75" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="sqs_hero" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sqs" vertex="1" parent="1">
+          <mxGeometry x="990" y="35" width="55" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- BAD SECTION -->
+        <mxCell id="bad_card" value="" style="rounded=16;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#FECACA;strokeWidth=1;shadow=1;shadowColor=#00000010;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="1020" height="260" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="bad_badge" value="&lt;span style='font-size:11px;color:#991B1B;font-weight:700;'&gt;ANTI-PATTERN&lt;/span&gt;" style="rounded=20;whiteSpace=wrap;html=1;fillColor=#FECACA;strokeColor=none;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="70" y="138" width="120" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="bad_title" value="&lt;b style='font-size:18px;color:#1A2332;'&gt;Synchronous chain&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="135" width="300" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="bad_desc" value="&lt;span style='font-size:12px;color:#991B1B;'&gt;If B is slow or fails, A waits and the whole request collapses.&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="168" width="450" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Bad Lambda A -->
+        <mxCell id="bad_la" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda" vertex="1" parent="1">
+          <mxGeometry x="220" y="210" width="70" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="bad_la_label" value="&lt;b style='font-size:12px;color:#1A2332;'&gt;Place Order&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="207" y="286" width="96" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Bad Lambda B -->
+        <mxCell id="bad_lb" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda" vertex="1" parent="1">
+          <mxGeometry x="500" y="210" width="70" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="bad_lb_label" value="&lt;b style='font-size:12px;color:#1A2332;'&gt;Notify Kitchen&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="483" y="286" width="104" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Bad Lambda C -->
+        <mxCell id="bad_lc" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda" vertex="1" parent="1">
+          <mxGeometry x="780" y="210" width="70" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="bad_lc_label" value="&lt;b style='font-size:12px;color:#1A2332;'&gt;Notify Customer&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="762" y="286" width="106" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Bad edges -->
+        <mxCell id="e_bad_ab" value="&lt;span style='color:#6B7280;font-size:10px;font-weight:700;font-family:monospace;'&gt;invoke()&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6B7280;labelBackgroundColor=#FEF2F2;fontSize=10;" edge="1" source="bad_la" target="bad_lb" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_bad_bc" value="&lt;span style='color:#6B7280;font-size:10px;font-weight:700;font-family:monospace;'&gt;invoke()&lt;/span&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6B7280;labelBackgroundColor=#FEF2F2;fontSize=10;" edge="1" source="bad_lb" target="bad_lc" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Failure cascade -->
+        <mxCell id="fail_arrow" value="" style="shape=flexArrow;endArrow=classic;html=1;strokeColor=#D1D5DB;fillColor=#E5E7EB;rounded=1;endWidth=10;endSize=3;startSize=3;opacity=40;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="820" y="330" as="sourcePoint"/>
+            <mxPoint x="260" y="330" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fail_text" value="&lt;span style='font-size:11px;color:#991B1B;font-style:italic;'&gt;Failure cascades backward — the whole request collapses&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="320" y="338" width="400" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- GOOD SECTION -->
+        <mxCell id="good_card" value="" style="rounded=16;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1;shadow=1;shadowColor=#00000010;" vertex="1" parent="1">
+          <mxGeometry x="40" y="410" width="1020" height="280" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="good_badge" value="&lt;span style='font-size:11px;color:#166534;font-weight:700;'&gt;BEST PRACTICE&lt;/span&gt;" style="rounded=20;whiteSpace=wrap;html=1;fillColor=#BBF7D0;strokeColor=none;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="70" y="428" width="120" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="good_title" value="&lt;b style='font-size:18px;color:#1A2332;'&gt;Decoupled with a queue&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="425" width="300" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="good_desc" value="&lt;span style='font-size:12px;color:#166534;'&gt;SQS / SNS / EventBridge between steps — a slow or failed step can't cascade; retries are easy.&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="458" width="600" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Good Lambda A -->
+        <mxCell id="good_la" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda" vertex="1" parent="1">
+          <mxGeometry x="110" y="505" width="70" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="good_la_label" value="&lt;b style='font-size:12px;color:#1A2332;'&gt;Place Order&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="97" y="580" width="96" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Good SQS 1 -->
+        <mxCell id="good_sqs1" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sqs" vertex="1" parent="1">
+          <mxGeometry x="300" y="505" width="70" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="good_sqs1_label" value="&lt;b style='font-size:12px;color:#1A2332;'&gt;SQS&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9px;color:#6B7280;font-family:monospace;'&gt;orders&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="292" y="580" width="86" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Good Lambda B -->
+        <mxCell id="good_lb" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda" vertex="1" parent="1">
+          <mxGeometry x="490" y="505" width="70" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="good_lb_label" value="&lt;b style='font-size:12px;color:#1A2332;'&gt;Notify Kitchen&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="475" y="580" width="100" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Good SQS 2 -->
+        <mxCell id="good_sqs2" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sqs" vertex="1" parent="1">
+          <mxGeometry x="680" y="505" width="70" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="good_sqs2_label" value="&lt;b style='font-size:12px;color:#1A2332;'&gt;SQS&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9px;color:#6B7280;font-family:monospace;'&gt;notifications&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="668" y="580" width="94" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Good Lambda C -->
+        <mxCell id="good_lc" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda" vertex="1" parent="1">
+          <mxGeometry x="870" y="505" width="70" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="good_lc_label" value="&lt;b style='font-size:12px;color:#1A2332;'&gt;Notify Customer&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="853" y="580" width="104" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Good edges -->
+        <mxCell id="e_g_a_s1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6B7280;" edge="1" source="good_la" target="good_sqs1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_g_s1_b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6B7280;" edge="1" source="good_sqs1" target="good_lb" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_g_b_s2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6B7280;" edge="1" source="good_lb" target="good_sqs2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_g_s2_c" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6B7280;" edge="1" source="good_sqs2" target="good_lc" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- FOOTER -->
+        <mxCell id="divider" value="" style="shape=line;strokeColor=#E5E7EB;strokeWidth=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="740" width="980" height="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="takeaway_icon" value="&lt;font style='font-size:20px;'&gt;💡&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="758" width="35" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="takeaway" value="&lt;i style='font-size:14px;color:#4B5563;'&gt;Put a buffer between steps and the system gets more resilient and far easier to retry.&lt;/i&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="235" y="758" width="650" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="credits" value="&lt;span style='font-size:10px;color:#9CA3AF;'&gt;Serverless Applications with AWS Lambda  ·  SQS  ·  SNS  ·  EventBridge&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="800" width="600" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom accent bar -->
+        <mxCell id="bottom_bar" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#232F3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="874" width="1100" height="6" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
